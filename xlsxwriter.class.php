@@ -219,9 +219,11 @@ class XLSXWriter
 			self::log( "Warning! passing $suppress_row=false|true to writeSheetHeader() is deprecated, this will be removed in a future version." );
 			$suppress_row = intval($col_options);
 		}
-    $style = &$col_options;
+		$style = &$col_options;
 
 		$col_widths = isset($col_options['widths']) ? (array)$col_options['widths'] : array();
+		$ht = isset($col_options['height']) ? floatval($col_options['height']) : 12.1; // vtens fixed
+		$customHt = isset($col_options['height']) ? true : false; // vtens fixed
 		$auto_filter = isset($col_options['auto_filter']) ? intval($col_options['auto_filter']) : false;
 		$freeze_rows = isset($col_options['freeze_rows']) ? intval($col_options['freeze_rows']) : false;
 		$freeze_columns = isset($col_options['freeze_columns']) ? intval($col_options['freeze_columns']) : false;
@@ -232,7 +234,7 @@ class XLSXWriter
 		{
 			$header_row = array_keys($header_types);      
 
-			$sheet->file_writer->write('<row collapsed="false" customFormat="false" customHeight="false" hidden="false" ht="12.1" outlineLevel="0" r="' . (1) . '">');
+			$sheet->file_writer->write('<row collapsed="false" customFormat="false" customHeight="'.($customHt).'" hidden="false" ht="'.($ht).'" outlineLevel="0" r="' . (1) . '">');
 			foreach ($header_row as $c => $v) {
 				$cell_style_idx = empty($style) ? $sheet->columns[$c]['default_cell_style'] : $this->addCellStyle( 'GENERAL', json_encode(isset($style[0]) ? $style[$c] : $style) );
 				$this->writeCell($sheet->file_writer, 0, $c, $v, $number_format_type='n_string', $cell_style_idx);
